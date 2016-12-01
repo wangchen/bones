@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Prune all local branches unless it's on remote
+# It's dangerous because it using 'git branch -D', so becareful.
+
+git=$(which git)
+tmp_file=/tmp/remote-branches.txt
+function quit {
+    rm -f $tmp_file
+    exit
+}
+$git checkout master || quit
+echo " * Fetch & Prune remote"
+$git fetch -p || quit
+$git branch -r |egrep -v HEAD |awk '{print $1}' > $tmp_file
+branches=$($git branch -vv |egrep -wv -f $tmp_file |awk '{print $1}')
+
+if [[ -z "$branches" ]]; then
+    echo " * Awesome! nothing need to prune."
+    quit
+fi
+echo " * Branches to be pruned:"
+echo
+for branch in $branches; do
+    echo " > $branch"
+done
+echo
+
+read -p " * DANGEROUS!! Are you sure? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo
+    for branch in $branches; do
+        printf " > pruning $branch ..."
+        out=$($git branch -D $branch 2>&1)
+        if [ $? -eq 0 ]; then
+            printf " done\n"
+        else
+            printf "\n\n$out\n"
+            quit
+        fi
+    done
+else
+    echo " * Canceled!"
+fi
+quit
