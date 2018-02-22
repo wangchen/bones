@@ -27,9 +27,57 @@ nowms() {
     gdate +%s%N |head -c 13
 }
 
-bones-setup() {
+bones-echo() {
+    print -P "🎃 ::%F{red}$1%f"
+}
+
+bones-install-brew() {
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+}
+
+bones-install-oh-my-zsh() {
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+}
+
+bones-install-utils() {
     # GNU utils like date realpath telnet ...
-    brew install coreutils inetutils
+    brew install wget coreutils inetutils
+}
+bones-install-git() {
+    # Replace system git
+    brew install git tig
+}
+
+bones-pyenv-install() {
+    # Cache the archive manually from mirror
+    v="$1"
+    cache_dir="~/.pyenv/cache"
+    fn="Python-$v.tar.xz"
+    bones-echo "Install $v"
+    if [ ! -f "$cache_dir/$fn" ]; then
+        bones-echo "Caching from mirror $cache_dir/$fn"
+        wget -P $cache_dir http://mirrors.sohu.com/python/$v/$fn
+    else
+        bones-echo "Using cached archive $cache_dir/$fn"
+    fi
+    pyenv install -s $v
+}
+
+bones-pyenv-find-lastest-dist() {
+    v="$1"
+    pyenv install -l |grep "^[ ]*$v\.[0-9]\+\.[0-9]\+$" |tail -1 |sed 's/ //g'
+}
+
+bones-install-py() {
+    bones-echo "Install the lastest distributions for 2.x & 3.x ..."
+    brew install pyenv pyenv-virtualenv
+    mkdir -p ~/.pyenv/cache/
+    v=$(bones-pyenv-find-lastest-dist 2)
+    bones-pyenv-install $v
+    pyenv virtualenv -f $v v2
+    v=$(bones-pyenv-find-lastest-dist 3)
+    bones-pyenv-install $v
+    pyenv virtualenv -f $v v3
 }
 
 alias issh='ssh -F ~/.ssh/aliyun-ssh_config'
