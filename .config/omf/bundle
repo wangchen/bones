@@ -1,0 +1,10 @@
+package foreign-env
+package https://github.com/jhillyerd/plugin-git
+package nvm
+package pyenv
+package z
+theme batman
+theme bobthefish
+theme default
+theme flash
+theme shellder
