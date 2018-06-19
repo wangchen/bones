@@ -1,9 +1,9 @@
 set -x JAVA_HOME (/usr/libexec/java_home -v 1.8)
-set -x EDITOR 'emacsclient'
 set -x PATH $PATH "$HOME/Developer/GitHub/bones/bin"
-
 set -x PATH $PATH "$HOME/Developer/App/flutter/bin"
 
+set -x EDITOR 'emacsclient'
+alias e="$EDITOR"
 
 
 abbr -a issh ssh -F "$HOME/.ssh/aliyun-ssh_config"
