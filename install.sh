@@ -4,6 +4,7 @@ items=(
     .zshrc
     .vimrc
     .tmux.conf
+    .npmrc
 )
 
 realpath() {
