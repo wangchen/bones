@@ -1,10 +1,15 @@
 package foreign-env
 package https://github.com/jhillyerd/plugin-git
 package nvm
-package pyenv
 package z
 theme batman
+theme bira
 theme bobthefish
 theme default
+theme eden
+theme emoji-powerline
+theme es
 theme flash
+theme mars
 theme shellder
+theme will
